@@ -19,5 +19,4 @@ class StudentsDataAdmin(ImportExportModelAdmin):
     list_display = ('name', 'roll_no', 'score', 'team_no')
 
 
-# admin.site.register(students_data)
 admin.site.register(students_data, StudentsDataAdmin)
