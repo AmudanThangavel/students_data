@@ -77,4 +77,4 @@ def Fetch(request):
 
 def ScoreTable(request):
     teamScore = students_data.objects.all()
-    return render(request, 'scores.html', {"scoreTable": students_data})
+    return render(request, 'scores.html', {"students_data": teamScore})
