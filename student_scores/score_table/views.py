@@ -52,15 +52,51 @@ def index(request):
     file_path = os.path.join(module_dir, 'static/sample.txt')   #full path to text.
     try:
         st = ""
+        run_selenium()
         fn = open(file_path,'rb')
         for i in fn.readlines():
-            print(i)
+            st += (bytes.decode(i)+"<br>")
     except:
         return HttpResponse("<H1>Error</H1>")
     # print("data=", data)
     return HttpResponse("<H1>"+st+"</H1>")
 
-
+def run_selenium():
+    try:
+        module_dir = os.path.dirname(__file__)   #get current directory
+        chromedriver = os.path.join(module_dir, 'static/chromedriver')   #full path to text.
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver = webdriver.Chrome(options = options,executable_path=chromedriver)
+        driver.maximize_window()
+        DriverWait(driver,"https://www.interviewbit.com/users/sign_in/")
+        driver.find_element_by_xpath('//input[@id = "user_email_field"]').send_keys("cdczoom@kpriet.ac.in")
+        driver.find_element_by_xpath('//input[@id = "user_password_field"]').send_keys("12345678")
+        driver.find_element_by_xpath('//input[@data-gtm-element = "login"]').click()
+        id1,score=[],[]
+        for page in range(1,12):
+            DriverWait(driver,"https://www.interviewbit.com/leaderboard/?followers=1&page="+str(page))
+            for i in driver.find_elements_by_tag_name("a"):
+                try:
+                    if str(i.get_attribute('href')).count('profile')>0 and str(i.get_attribute('href')).count('cdc-zoom')==0:
+        #                 print(i.get_attribute('href'),i.text)
+                        id1.append(i.get_attribute('href')[i.get_attribute('href').rindex('/')+1:])
+                except:
+                    pass
+            for i in driver.find_elements_by_tag_name("tr"):
+                try:
+                    if i.text!='Rank User Level Streak Score':
+                        score.append(int(i.text[i.text.rindex(' ')+1:]))
+                except:
+                    pass
+        print(id1,score)
+        for i,j in zip(id1,score):
+            
+            pass
+    except:
+        print(sys.exc_info())
+    
+    
 def Fetch(request):
     chromedriver = "E:\\chromedriver_win32\\chromedriver.exe"
     options = webdriver.ChromeOptions()
