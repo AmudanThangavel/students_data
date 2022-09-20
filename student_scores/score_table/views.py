@@ -49,8 +49,9 @@ def driver_scroll(driver):
 # Create your views here.
 
 def index(request):
-    fle = staticfiles_storage.path('css/styles.css') 
-    return HttpResponse("<H1>"+str(type(fle))+"</H1>")
+    fle = staticfiles_storage.path('sample.txt')
+    st = ""
+    return HttpResponse("<H1>"+fle+"</H1>")
 
 
 def Fetch(request):
