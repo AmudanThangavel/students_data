@@ -19,8 +19,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from collections import defaultdict
 from .views import *
-from django.contrib.staticfiles.storage import staticfiles_storage
-
+from django.templatetags.static import static
 
 def DriverWait(driver, link):
     driver.get(link)
@@ -49,9 +48,17 @@ def driver_scroll(driver):
 # Create your views here.
 
 def index(request):
-    fle = staticfiles_storage.path('sample.txt')
-    st = ""
-    return HttpResponse("<H1>"+fle+"</H1>")
+    module_dir = os.path.dirname(__file__)   #get current directory
+    file_path = os.path.join(module_dir, 'static/sample.txt')   #full path to text.
+    try:
+        st = ""
+        fn = open(file_path,'rb')
+        for i in fn.readlines():
+            print(i)
+    except:
+        return HttpResponse("<H1>Error</H1>")
+    # print("data=", data)
+    return HttpResponse("<H1>"+st+"</H1>")
 
 
 def Fetch(request):
