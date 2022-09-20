@@ -21,6 +21,10 @@ from collections import defaultdict
 from .views import *
 from django.templatetags.static import static
 
+# imports for rendering the table
+from accounts.models import students_data
+
+
 def DriverWait(driver, link):
     driver.get(link)
     timeout = 5
@@ -47,9 +51,11 @@ def driver_scroll(driver):
 
 # Create your views here.
 
+
 def index(request):
-    module_dir = os.path.dirname(__file__)   #get current directory
-    file_path = os.path.join(module_dir, 'static/sample.txt')   #full path to text.
+    module_dir = os.path.dirname(__file__)  # get current directory
+    # full path to text.
+    file_path = os.path.join(module_dir, 'static/sample.txt')
     try:
         st = ""
         run_selenium()
@@ -103,3 +109,8 @@ def Fetch(request):
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     driver = webdriver.Chrome(options=options, executable_path=chromedriver)
     driver.maximize_window()
+
+
+def ScoreTable(request):
+    teamScore = students_data.objects.all()
+    return render(request, 'scores.html', {"students_data": teamScore})
