@@ -49,11 +49,10 @@ def driver_scroll(driver):
 # Create your views here.
 
 def index(request):
-    url = staticfiles_storage.url('css\\styles.css')
-    st = ""
-    for i in open(url,'r'):
-        st += i+"\n"
-    return HttpResponse("<H1>"+st+"</H1>")
+    fle = staticfiles_storage.path('css/styles.css') 
+    return HttpResponse("<H1>"+str(type(fle))+"</H1>")
+
+
 def Fetch(request):
     chromedriver = "E:\\chromedriver_win32\\chromedriver.exe"
     options = webdriver.ChromeOptions()
