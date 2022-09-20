@@ -1,8 +1,9 @@
 
 from django.contrib import admin
 from django.urls import path, include
-from .views import index
+from .views import *
 
 urlpatterns = [
-    path("test/",index),
+    path("test/", index),
+    path('', ScoreTable)
 ]
