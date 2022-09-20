@@ -15,7 +15,7 @@ class StudentResource(resources.ModelResource):
 
 
 class StudentsDataAdmin(ImportExportModelAdmin):
-    list_filter = ('roll_no', 'team_no', 'score')
+    list_filter = ('department', 'team_no', 'score')
     list_display = ('name', 'roll_no', 'score', 'team_no')
 
 

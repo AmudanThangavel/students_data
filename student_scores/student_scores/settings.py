@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'import_export',
+    'score_table',
 ]
 
 MIDDLEWARE = [
