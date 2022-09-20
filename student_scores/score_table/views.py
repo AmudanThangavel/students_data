@@ -97,8 +97,13 @@ def run_selenium():
                     pass
         print(id1,score)
         for i,j in zip(id1,score):
-            
-            pass
+            try:
+                obj = students_data.objects.get(roll_no=i.upper())
+                obj.score = j
+                obj.save()
+                pass
+            except:
+                print(i)
     except:
         print(sys.exc_info())
     
