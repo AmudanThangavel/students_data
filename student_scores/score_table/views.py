@@ -60,7 +60,7 @@ def index(request):
     try:
         st = ""
         run_selenium()
-        fn = open(file_path,'rb')
+        fn = open(file_path, 'rb')
         for i in fn.readlines():
             st += (bytes.decode(i)+"<br>")
     except:
@@ -68,36 +68,44 @@ def index(request):
     # print("data=", data)
     return HttpResponse("<H1>"+st+"</H1>")
 
+
 def run_selenium():
     try:
-        module_dir = os.path.dirname(__file__)   #get current directory
-        chromedriver = os.path.join(module_dir, 'static/chromedriver.exe')   #full path to text.
+        module_dir = os.path.dirname(__file__)  # get current directory
+        # full path to text.
+        chromedriver = os.path.join(module_dir, 'static/chromedriver.exe')
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        driver = webdriver.Chrome(options = options,executable_path=chromedriver)
+        driver = webdriver.Chrome(
+            options=options, executable_path=chromedriver)
         driver.minimize_window()
-        DriverWait(driver,"https://www.interviewbit.com/users/sign_in/")
-        driver.find_element('xpath','//input[@id = "user_email_field"]').send_keys("cdczoom@kpriet.ac.in")
-        driver.find_element('xpath','//input[@id = "user_password_field"]').send_keys("12345678")
-        driver.find_element('xpath','//input[@data-gtm-element = "login"]').click()
-        id1,score=[],[]
-        for page in range(1,13):
-            DriverWait(driver,"https://www.interviewbit.com/leaderboard/?followers=1&page="+str(page))
-            for i in driver.find_elements(By.TAG_NAME,"a"):
+        DriverWait(driver, "https://www.interviewbit.com/users/sign_in/")
+        driver.find_element(
+            'xpath', '//input[@id = "user_email_field"]').send_keys("cdczoom@kpriet.ac.in")
+        driver.find_element(
+            'xpath', '//input[@id = "user_password_field"]').send_keys("12345678")
+        driver.find_element(
+            'xpath', '//input[@data-gtm-element = "login"]').click()
+        id1, score = [], []
+        for page in range(1, 13):
+            DriverWait(
+                driver, "https://www.interviewbit.com/leaderboard/?followers=1&page="+str(page))
+            for i in driver.find_elements(By.TAG_NAME, "a"):
                 try:
-                    if str(i.get_attribute('href')).count('profile')>0 and str(i.get_attribute('href')).count('cdc-zoom')==0:
-        #                 print(i.get_attribute('href'),i.text)
-                        id1.append(i.get_attribute('href')[i.get_attribute('href').rindex('/')+1:])
+                    if str(i.get_attribute('href')).count('profile') > 0 and str(i.get_attribute('href')).count('cdc-zoom') == 0:
+                        #                 print(i.get_attribute('href'),i.text)
+                        id1.append(i.get_attribute('href')[
+                                   i.get_attribute('href').rindex('/')+1:])
                 except:
                     pass
-            for i in driver.find_elements(By.TAG_NAME,"tr"):
+            for i in driver.find_elements(By.TAG_NAME, "tr"):
                 try:
-                    if i.text!='Rank User Level Streak Score':
+                    if i.text != 'Rank User Level Streak Score':
                         score.append(int(i.text[i.text.rindex(' ')+1:]))
                 except:
                     pass
-        print(id1,score)
-        for i,j in zip(id1,score):
+        print(id1, score)
+        for i, j in zip(id1, score):
             try:
                 obj = students_data.objects.get(roll_no=i.upper())
                 obj.score = j
@@ -108,10 +116,10 @@ def run_selenium():
                 print(i)
     except:
         print(sys.exc_info())
-    
-    
+
+
 def Fetch(request):
-    module_dir = os.path.dirname(__file__)   #get current directory
+    module_dir = os.path.dirname(__file__)  # get current directory
     chromedriver = os.path.join(module_dir, 'static/chromedriver.exe')
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -120,37 +128,42 @@ def Fetch(request):
 
 
 def ScoreTable(request):
-    d ={}
-    top10mem =[]
+    d = {}
+    top10mem = []
     top10team = []
+    top10score = []
     teamScore = students_data.objects.all()
     temp = students_data.objects.all()
     m = max([i.team_no for i in temp])
-    sc = list(set([ j.score for  j in temp]))
-    top10 = heapq.nlargest(10,sc)
+    sc = list(set([j.score for j in temp]))
+    top10 = heapq.nlargest(10, sc)
     for data in top10:
-        b =students_data.objects.filter(score = data)
-        l =[]
+        b = students_data.objects.filter(score=data)
+        l = []
+        scr = []
         for iter in b:
+            scr.append(iter.score)
             l.append(iter.name)
         top10mem.append(l)
-    count={}
-    for i in range(1,m+1):
-        fl = students_data.objects.filter(team_no = i)
-        c = students_data.objects.filter(team_no = i).count()
-        sum =0
+        top10score.append(scr)
+    count = {}
+    for i in range(1, m+1):
+        fl = students_data.objects.filter(team_no=i)
+        c = students_data.objects.filter(team_no=i).count()
+        sum = 0
         for j in fl:
-            sum+=int(j.score)
+            sum += int(j.score)
         d[i] = sum/c
         count[i] = c
-    a =dict(reversed(sorted(d.items(), key=lambda item: item[1])))
-   
-    x =0
+    a = dict(reversed(sorted(d.items(), key=lambda item: item[1])))
+
+    x = 0
     for i in a.keys():
         top10team.append(i)
-        x+=1
-        if x ==10:
+        x += 1
+        if x == 10:
             break
     print(top10team)
     print(top10mem)
-    return render(request, 'scores.html', {"students_data": teamScore, "rank" : a, "count" : count, "top10per" : top10mem,'top10team':top10team})
+    top10zip = zip(top10mem, top10score)
+    return render(request, 'scores.html', {"students_data": teamScore, "rank": a, "count": count, "top10per": top10mem, 'top10zip': top10zip, "topmem": len(top10mem)})

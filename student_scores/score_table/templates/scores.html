@@ -29,19 +29,27 @@
 
 <body>
 
-    <section id="Toppers" class="row">
+    <section id="Toppers" class="row info ">
 
-        <div id="TopTeam" class="border col-sm">
+        <div id="TopTeam" class="border col-sm info">
             <h1>🏆 Top Teams 🏆</h1>
-            <h2>Rank 1 : </h2>
-            <h2>Rank 2 : </h2>
-            <h2>Rank 3 : </h2>
+            <ol class="list-group list-group-flush">
+                {% for team in top10team %}
+                <li class="list-group-item">TEAM : {{ team }}</li>
+                {% endfor %}
+            </ol>
         </div>
         <div id="topMembers" class="border col-sm">
             <h1>🏆 Top Members 🏆</h1>
-            <h2>Rank 1 : </h2>
-            <h2>Rank 2 : </h2>
-            <h2>Rank 3 : </h2>
+            <ol class="list-group list-group-flush">
+                {% for top,scr in top10zip %}
+                <li class="list-group-item">
+                    {% for i in topmen %}
+                    {{ top.i }}- {{ scr.i }}
+                    {% endfor %}
+                </li>
+                {% endfor %}
+            </ol>
         </div>
     </section>
 
@@ -56,15 +64,15 @@
         {% for team_no,avg in rank.items %}
         {% for id, num in count.items %}
         {% if id == team_no %}
-    
-            <td rowspan= "{{ num }}" >{{ team_no  }}</td>
-            <td rowspan ="{{ num }}">{{ avg }}</td>
+
+        <td rowspan="{{ num }}">{{ team_no }}</td>
+        <td rowspan="{{ num }}">{{ avg }}</td>
         {% for data in students_data %}
         {% if team_no == data.team_no %}
-            <td>{{ data.score }}</td>
-            <td>{{ data.name }}</td>
-            <td>{{ data.roll_no }}</td>
-           
+        <td>{{ data.score }}</td>
+        <td>{{ data.name }}</td>
+        <td>{{ data.roll_no }}</td>
+
         </tr>
         {% endif %}
         {% endfor %}
