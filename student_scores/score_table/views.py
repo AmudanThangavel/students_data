@@ -115,7 +115,18 @@ def Fetch(request):
     driver = webdriver.Chrome(options=options, executable_path=chromedriver)
     driver.maximize_window()
 
-
+d ={}
 def ScoreTable(request):
     teamScore = students_data.objects.all()
-    return render(request, 'scores.html', {"students_data": teamScore})
+    temp = students_data.objects.all()
+    m = max([i.team_no for i in temp])
+    for i in range(1,m+1):
+        fl = students_data.objects.filter(team_no = i)
+        c = students_data.objects.filter(team_no = i).count()
+        sum =0
+        for j in fl:
+            sum+=int(j.score)
+        d[i] = sum/c
+    a =dict(reversed(sorted(d.items(), key=lambda item: item[1])))
+    print(a)
+    return render(request, 'scores.html', {"students_data": teamScore, "rank" : a})
