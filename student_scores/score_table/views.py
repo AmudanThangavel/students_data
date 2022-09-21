@@ -143,7 +143,7 @@ def ScoreTable(request):
         scr = []
         for iter in b:
             scr.append(int(iter.score))
-            l.append(iter.name)
+            l.append((iter.name)+ "-" +iter.department)
         top10mem.append(l)
         top10score.append(scr)
     count = {}
@@ -167,5 +167,5 @@ def ScoreTable(request):
     print(top10team)
     print(top10mem)
     print(top10score)
-    rng = [i for i in range(10)]
+    rng = [i for i in range(1,11)]
     return render(request, 'scores.html', {"students_data": teamScore, "rank": a, "count": count, "top10team": top10team, "top10per": top10mem, "top10score": top10score, "range": rng})

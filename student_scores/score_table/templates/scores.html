@@ -30,7 +30,7 @@
 <body>
     <h1>KPRIET - CDC</h1>
     <section id="Toppers" class="row info ">
-        <div id="TopTeam" class="border col-sm info">
+        <div id="TopTeam" class="border col-sm-1 info">
             <h1>Rank</h1>
             <ol class="list-group list-group-flush">
                 {% for rank in range %}
@@ -52,7 +52,7 @@
                 {% for top in top10per %}
                 <li class="list-group-item">
                     {% for t in top %}
-                    {{ t }}
+                    {{ t }}<br>
                     {% endfor %}
                 </li>
                 {% endfor %}
@@ -64,7 +64,7 @@
                 {% for scr in top10score %}
                 <li class="list-group-item">
                     {% for s in scr %}
-                    {{ s }}
+                    {{ s }}<br>
                     {% endfor %}
                 </li>
                 {% endfor %}
@@ -72,8 +72,8 @@
         </div>
     </section>
 
-    <table style="width:100%" class="table table-sm">
-        <tr style="color: blue;">
+    <table style="width:100%" class="table table-dark table-striped">
+        <tr style="color: rgb(108, 174, 255);">
             <th>Team No</th>
             <th>Team Score</th>
             <th>Score</th>
