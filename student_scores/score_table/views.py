@@ -167,4 +167,5 @@ def ScoreTable(request):
     print(top10team)
     print(top10mem)
     print(top10score)
-    return render(request, 'scores.html', {"students_data": teamScore, "rank": a, "count": count, "top10team": top10team, "top10per": top10mem, "top10score": top10score})
+    rng = [i for i in range(10)]
+    return render(request, 'scores.html', {"students_data": teamScore, "rank": a, "count": count, "top10team": top10team, "top10per": top10mem, "top10score": top10score, "range": rng})

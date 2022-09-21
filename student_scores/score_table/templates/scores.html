@@ -30,7 +30,14 @@
 <body>
     <h1>KPRIET - CDC</h1>
     <section id="Toppers" class="row info ">
-
+        <div id="TopTeam" class="border col-sm info">
+            <h1>Rank</h1>
+            <ol class="list-group list-group-flush">
+                {% for rank in range %}
+                <li class="list-group-item">{{ rank }}</li>
+                {% endfor %}
+            </ol>
+        </div>
         <div id="TopTeam" class="border col-sm info">
             <h1>🏆 Top Teams 🏆</h1>
             <ol class="list-group list-group-flush">
