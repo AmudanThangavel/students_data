@@ -117,19 +117,22 @@ def Fetch(request):
     driver = webdriver.Chrome(options=options, executable_path=chromedriver)
     driver.maximize_window()
 
-d ={}
-top3mem =[]
-top3team = []
+
 def ScoreTable(request):
+    d ={}
+    top10mem =[]
+    top10team = []
     teamScore = students_data.objects.all()
     temp = students_data.objects.all()
     m = max([i.team_no for i in temp])
     sc = list(set([ j.score for  j in temp]))
-    top3 = heapq.nlargest(3,sc)
-    for data in top3:
+    top10 = heapq.nlargest(10,sc)
+    for data in top10:
         b =students_data.objects.filter(score = data)
-        for iter in data:
-            top3mem.append(b.name)
+        l =[]
+        for iter in b:
+            l.append(iter.name)
+        top10mem.append(l)
     count={}
     for i in range(1,m+1):
         fl = students_data.objects.filter(team_no = i)
@@ -143,10 +146,10 @@ def ScoreTable(request):
    
     x =0
     for i in a.keys():
-        top3team.append(i)
+        top10team.append(i)
         x+=1
-        if x ==3:
+        if x ==10:
             break
-    print(top3team)
-    print(top3mem)
-    return render(request, 'scores.html', {"students_data": teamScore, "rank" : a, "count" : count, "top3per" : d,'top3team':d})
+    print(top10team)
+    print(top10mem)
+    return render(request, 'scores.html', {"students_data": teamScore, "rank" : a, "count" : count, "top10per" : top10mem,'top10team':top10team})
