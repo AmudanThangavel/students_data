@@ -28,7 +28,7 @@
 </head>
 
 <body>
-
+    <h1>KPRIET - CDC</h1>
     <section id="Toppers" class="row info ">
 
         <div id="TopTeam" class="border col-sm info">
@@ -42,10 +42,22 @@
         <div id="topMembers" class="border col-sm">
             <h1>🏆 Top Members 🏆</h1>
             <ol class="list-group list-group-flush">
-                {% for top,scr in top10zip %}
+                {% for top in top10per %}
                 <li class="list-group-item">
-                    {% for i in topmen %}
-                    {{ top.i }}- {{ scr.i }}
+                    {% for t in top %}
+                    {{ t }}
+                    {% endfor %}
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+        <div class="border col-sm">
+            <h1>💯Top Scores💯 </h1>
+            <ol class="list-group list-group-flush">
+                {% for scr in top10score %}
+                <li class="list-group-item">
+                    {% for s in scr %}
+                    {{ s }}
                     {% endfor %}
                 </li>
                 {% endfor %}

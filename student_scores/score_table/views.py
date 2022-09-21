@@ -142,7 +142,7 @@ def ScoreTable(request):
         l = []
         scr = []
         for iter in b:
-            scr.append(iter.score)
+            scr.append(int(iter.score))
             l.append(iter.name)
         top10mem.append(l)
         top10score.append(scr)
@@ -160,10 +160,11 @@ def ScoreTable(request):
     x = 0
     for i in a.keys():
         top10team.append(i)
+
         x += 1
         if x == 10:
             break
     print(top10team)
     print(top10mem)
-    top10zip = zip(top10mem, top10score)
-    return render(request, 'scores.html', {"students_data": teamScore, "rank": a, "count": count, "top10per": top10mem, 'top10zip': top10zip, "topmem": len(top10mem)})
+    print(top10score)
+    return render(request, 'scores.html', {"students_data": teamScore, "rank": a, "count": count, "top10team": top10team, "top10per": top10mem, "top10score": top10score})

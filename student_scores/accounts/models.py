@@ -8,6 +8,7 @@ class students_data(models.Model):
     department = models.CharField(max_length=35)
     score = models.DecimalField(max_digits=10, decimal_places=3)
     team_no = models.IntegerField()
+    updated_at = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.roll_no
