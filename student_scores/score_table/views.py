@@ -20,6 +20,7 @@ from selenium.webdriver.common.by import By
 from collections import defaultdict
 from .views import *
 from django.templatetags.static import static
+import heapq
 
 # imports for rendering the table
 from accounts.models import students_data
@@ -70,11 +71,11 @@ def index(request):
 def run_selenium():
     try:
         module_dir = os.path.dirname(__file__)   #get current directory
-        chromedriver = os.path.join(module_dir, 'static/chromedriver')   #full path to text.
+        chromedriver = os.path.join(module_dir, 'static/chromedriver.exe')   #full path to text.
         options = webdriver.ChromeOptions()
         options.add_experimental_option('excludeSwitches', ['enable-logging'])
         driver = webdriver.Chrome(options = options,executable_path=chromedriver)
-        driver.maximize_window()
+        driver.minimize_window()
         DriverWait(driver,"https://www.interviewbit.com/users/sign_in/")
         driver.find_element_by_xpath('//input[@id = "user_email_field"]').send_keys("cdczoom@kpriet.ac.in")
         driver.find_element_by_xpath('//input[@id = "user_password_field"]').send_keys("12345678")
@@ -100,6 +101,7 @@ def run_selenium():
             try:
                 obj = students_data.objects.get(roll_no=i.upper())
                 obj.score = j
+                obj.name = obj.name.upper()
                 obj.save()
                 pass
             except:
@@ -116,10 +118,19 @@ def Fetch(request):
     driver.maximize_window()
 
 d ={}
+top3mem =[]
+top3team = []
 def ScoreTable(request):
     teamScore = students_data.objects.all()
     temp = students_data.objects.all()
     m = max([i.team_no for i in temp])
+    sc = list(set([ j.score for  j in temp]))
+    top3 = heapq.nlargest(3,sc)
+    for data in top3:
+        b =students_data.objects.filter(score = data)
+        for iter in data:
+            top3mem.append(b.name)
+    count={}
     for i in range(1,m+1):
         fl = students_data.objects.filter(team_no = i)
         c = students_data.objects.filter(team_no = i).count()
@@ -127,6 +138,15 @@ def ScoreTable(request):
         for j in fl:
             sum+=int(j.score)
         d[i] = sum/c
+        count[i] = c
     a =dict(reversed(sorted(d.items(), key=lambda item: item[1])))
-    print(a)
-    return render(request, 'scores.html', {"students_data": teamScore, "rank" : a})
+   
+    x =0
+    for i in a.keys():
+        top3team.append(i)
+        x+=1
+        if x ==3:
+            break
+    print(top3team)
+    print(top3mem)
+    return render(request, 'scores.html', {"students_data": teamScore, "rank" : a, "count" : count, "top3per" : d,'top3team':d})
