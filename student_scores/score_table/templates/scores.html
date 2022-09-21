@@ -13,36 +13,39 @@
         crossorigin="anonymous"></script>
     <title>Scores</title>
     <style>
-         /* body {
+        body {
             margin: 5%;
-        } */
+        }
 
         table {
-            margin: 4%;
+            padding: 4%;
         }
 
-        #toppers {
-            margin-left: 25%;
-            border-color: black;
-            width: 40%;
-
-            border-width: 10px;
-            margin-top: 1%;
+        .border {
+            border: 5px;
         }
     </style>
-
 </head>
 
 <body>
 
-    <div id="toppers" class="border">
-        <h2>🥇Rank 1 : </h2>
-        <h2>🥈Rank 2 : </h2>
-        <h2>🥉Rank 3 : </h2>
-    </div>
-</section>
+    <section id="Toppers" class="row">
 
-<table style="width:100%" class="table table-sm">
+        <div id="TopTeam" class="border col-sm">
+            <h1>🏆 Top Teams 🏆</h1>
+            <h2>Rank 1 : </h2>
+            <h2>Rank 2 : </h2>
+            <h2>Rank 3 : </h2>
+        </div>
+        <div id="topMembers" class="border col-sm">
+            <h1>🏆 Top Members 🏆</h1>
+            <h2>Rank 1 : </h2>
+            <h2>Rank 2 : </h2>
+            <h2>Rank 3 : </h2>
+        </div>
+    </section>
+
+    <table style="width:100%" class="table table-sm">
         <tr style="color: blue;">
             <th>Team No</th>
             <th>Team Score</th>

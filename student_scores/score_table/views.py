@@ -77,20 +77,20 @@ def run_selenium():
         driver = webdriver.Chrome(options = options,executable_path=chromedriver)
         driver.minimize_window()
         DriverWait(driver,"https://www.interviewbit.com/users/sign_in/")
-        driver.find_element('xpath','//input[@id = "user_email_field"]').send_keys("cdczoom@kpriet.ac.in")
-        driver.find_element('xpath','//input[@id = "user_password_field"]').send_keys("12345678")
-        driver.find_element('xpath','//input[@data-gtm-element = "login"]').click()
+        driver.find_element_by_xpath('//input[@id = "user_email_field"]').send_keys("cdczoom@kpriet.ac.in")
+        driver.find_element_by_xpath('//input[@id = "user_password_field"]').send_keys("12345678")
+        driver.find_element_by_xpath('//input[@data-gtm-element = "login"]').click()
         id1,score=[],[]
-        for page in range(1,13):
+        for page in range(1,12):
             DriverWait(driver,"https://www.interviewbit.com/leaderboard/?followers=1&page="+str(page))
-            for i in driver.find_elements(By.TAG_NAME,"a"):
+            for i in driver.find_elements_by_tag_name("a"):
                 try:
                     if str(i.get_attribute('href')).count('profile')>0 and str(i.get_attribute('href')).count('cdc-zoom')==0:
         #                 print(i.get_attribute('href'),i.text)
                         id1.append(i.get_attribute('href')[i.get_attribute('href').rindex('/')+1:])
                 except:
                     pass
-            for i in driver.find_elements(By.TAG_NAME,"tr"):
+            for i in driver.find_elements_by_tag_name("tr"):
                 try:
                     if i.text!='Rank User Level Streak Score':
                         score.append(int(i.text[i.text.rindex(' ')+1:]))
@@ -111,26 +111,28 @@ def run_selenium():
     
     
 def Fetch(request):
-    module_dir = os.path.dirname(__file__)   #get current directory
-    chromedriver = os.path.join(module_dir, 'static/chromedriver.exe')
+    chromedriver = "E:\\chromedriver_win32\\chromedriver.exe"
     options = webdriver.ChromeOptions()
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     driver = webdriver.Chrome(options=options, executable_path=chromedriver)
     driver.maximize_window()
 
-d ={}
-top3mem =[]
-top3team = []
+
 def ScoreTable(request):
+    d ={}
+    top10mem =[]
+    top10team = []
     teamScore = students_data.objects.all()
     temp = students_data.objects.all()
     m = max([i.team_no for i in temp])
     sc = list(set([ j.score for  j in temp]))
-    top3 = heapq.nlargest(3,sc)
-    # for data in top3:
-    #     b =students_data.objects.filter(score = data)
-    #     for iter in data:
-    #         top3mem.append(b.name)
+    top10 = heapq.nlargest(10,sc)
+    for data in top10:
+        b =students_data.objects.filter(score = data)
+        l =[]
+        for iter in b:
+            l.append(iter.name)
+        top10mem.append(l)
     count={}
     for i in range(1,m+1):
         fl = students_data.objects.filter(team_no = i)
@@ -144,10 +146,10 @@ def ScoreTable(request):
    
     x =0
     for i in a.keys():
-        top3team.append(i)
+        top10team.append(i)
         x+=1
-        if x ==3:
+        if x ==10:
             break
-    print(top3team)
-    print(top3mem)
-    return render(request, 'scores.html', {"students_data": teamScore, "rank" : a, "count" : count, "top3per" : d,'top3team':d})
+    print(top10team)
+    print(top10mem)
+    return render(request, 'scores.html', {"students_data": teamScore, "rank" : a, "count" : count, "top10per" : top10mem,'top10team':top10team})
