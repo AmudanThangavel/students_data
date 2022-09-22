@@ -4,6 +4,6 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    path("test/", index),
+    path("update/", index),
     path('', ScoreTable)
 ]

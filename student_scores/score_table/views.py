@@ -58,77 +58,84 @@ def driver_scroll(driver):
 
 
 def index(request):
-    module_dir = os.path.dirname(__file__)  # get current directory
-    # full path to text.
-    file_path = os.path.join(module_dir, 'static/sample.txt')
-    try:
-        st = ""
-        run_selenium()
-        fn = open(file_path, 'rb')
-        for i in fn.readlines():
-            st += (bytes.decode(i)+"<br>")
-    except:
-        return HttpResponse("<H1>Error</H1>")
-    # print("data=", data)
-    return HttpResponse("<H1>"+st+"</H1>")
+    if request.user.is_authenticated:
+        module_dir = os.path.dirname(__file__)  # get current directory
+        # full path to text.
+        file_path = os.path.join(module_dir, 'static/sample.txt')
+        try:
+            st = ""
+            run_selenium()
+            fn = open(file_path, 'rb')
+            for i in fn.readlines():
+                st += (bytes.decode(i)+"<br>")
+
+        except:
+            return HttpResponse("<H1>Error</H1>")
+        # print("data=", data)
+        return HttpResponse("<H1>"+st+"</H1>")
+
+    else:
+        return redirect("/")
 
 
 def run_selenium():
-    th=0
-    while(th!=1):
-        try:
-            module_dir = os.path.dirname(__file__)  # get current directory
-            # full path to text.
-            chromedriver = ""
-            if('mac' in platform.platform()):
-                chromedriver = os.path.join(module_dir, 'static/chromedriver')
-            else:
-                chromedriver = os.path.join(module_dir, 'static/chromedriver.exe')
-            options = webdriver.ChromeOptions()
-            options.add_experimental_option('excludeSwitches', ['enable-logging'])
-            driver = webdriver.Chrome(
-                options=options, executable_path=chromedriver)
-            driver.minimize_window()
-            DriverWait(driver, "https://www.interviewbit.com/users/sign_in/")
-            driver.find_element(
-                'xpath', '//input[@id = "user_email_field"]').send_keys("cdczoom@kpriet.ac.in")
-            driver.find_element(
-                'xpath', '//input[@id = "user_password_field"]').send_keys("12345678")
-            driver.find_element(
-                'xpath', '//input[@data-gtm-element = "login"]').click()
-            id1, score = [], []
-            for page in range(1, 13):
-                DriverWait(
-                    driver, "https://www.interviewbit.com/leaderboard/?followers=1&page="+str(page))
-                for i in driver.find_elements(By.TAG_NAME, "a"):
+        th=0
+        while(th!=1):
+            try:
+                module_dir = os.path.dirname(__file__)  # get current directory
+                # full path to text.
+                chromedriver = ""
+                if('mac' in platform.platform()):
+                    chromedriver = os.path.join(module_dir, 'static/chromedriver')
+                else:
+                    chromedriver = os.path.join(module_dir, 'static/chromedriver.exe')
+                options = webdriver.ChromeOptions()
+                options.add_experimental_option('excludeSwitches', ['enable-logging'])
+                driver = webdriver.Chrome(
+                    options=options, executable_path=chromedriver)
+                driver.minimize_window()
+                DriverWait(driver, "https://www.interviewbit.com/users/sign_in/")
+                driver.find_element(
+                    'xpath', '//input[@id = "user_email_field"]').send_keys("cdczoom@kpriet.ac.in")
+                driver.find_element(
+                    'xpath', '//input[@id = "user_password_field"]').send_keys("12345678")
+                driver.find_element(
+                    'xpath', '//input[@data-gtm-element = "login"]').click()
+                id1, score = [], []
+                for page in range(1, 13):
+                    DriverWait(
+                        driver, "https://www.interviewbit.com/leaderboard/?followers=1&page="+str(page))
+                    for i in driver.find_elements(By.TAG_NAME, "a"):
+                        try:
+                            if str(i.get_attribute('href')).count('profile') > 0 and str(i.get_attribute('href')).count('cdc-zoom') == 0:
+                                #                 print(i.get_attribute('href'),i.text)
+                                id1.append(i.get_attribute('href')[
+                                        i.get_attribute('href').rindex('/')+1:])
+                        except:
+                            pass
+                    for i in driver.find_elements(By.TAG_NAME, "tr"):
+                        try:
+                            if i.text != 'Rank User Level Streak Score':
+                                score.append(int(i.text[i.text.rindex(' ')+1:]))
+                        except:
+                            pass
+                print(id1, score)
+                for i, j in zip(id1, score):
                     try:
-                        if str(i.get_attribute('href')).count('profile') > 0 and str(i.get_attribute('href')).count('cdc-zoom') == 0:
-                            #                 print(i.get_attribute('href'),i.text)
-                            id1.append(i.get_attribute('href')[
-                                    i.get_attribute('href').rindex('/')+1:])
-                    except:
+                        obj = students_data.objects.get(roll_no=i.upper())
+                        obj.score = j
+                        obj.name = obj.name.upper()
+                        obj.updated_at = datetime.datetime.now()
+                        obj.save()
                         pass
-                for i in driver.find_elements(By.TAG_NAME, "tr"):
-                    try:
-                        if i.text != 'Rank User Level Streak Score':
-                            score.append(int(i.text[i.text.rindex(' ')+1:]))
                     except:
-                        pass
-            print(id1, score)
-            for i, j in zip(id1, score):
-                try:
-                    obj = students_data.objects.get(roll_no=i.upper())
-                    obj.score = j
-                    obj.name = obj.name.upper()
-                    obj.updated_at = datetime.datetime.now()
-                    obj.save()
-                    pass
-                except:
-                    print(i)
-            driver.close()
-        except:
-            print(sys.exc_info())
-        time.sleep(600)
+                        print(i)
+                driver.close()
+            except:
+                print(sys.exc_info())
+            time.sleep(600)
+        else:
+            return redirect('/score/')
 
 
 def Fetch(request):
