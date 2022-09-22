@@ -16,13 +16,14 @@ import sys
 from openpyxl import workbook, load_workbook
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from collections import defaultdict
 from .views import *
 from django.templatetags.static import static
 import heapq
+import platform
 import pytz
 
 # imports for rendering the table
@@ -78,7 +79,11 @@ def run_selenium():
         try:
             module_dir = os.path.dirname(__file__)  # get current directory
             # full path to text.
-            chromedriver = os.path.join(module_dir, 'static/chromedriver.exe')
+            chromedriver = ""
+            if('mac' in platform.platform()):
+                chromedriver = os.path.join(module_dir, 'static/chromedriver')
+            else:
+                chromedriver = os.path.join(module_dir, 'static/chromedriver.exe')
             options = webdriver.ChromeOptions()
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
             driver = webdriver.Chrome(
