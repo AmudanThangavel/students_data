@@ -43,8 +43,8 @@
         <div id="TopTeam" class="border col-sm info">
             <h1>🏆 Top Teams 🏆</h1>
             <ol class="list-group list-group-flush">
-                {% for team in top10team %}
-                <li class="list-group-item">TEAM : {{ team }}</li>
+                {% for team,score in top10team %}
+                <li class="list-group-item">TEAM : {{ team }} &emsp;&emsp;&emsp; {{ score }}</li>
                 {% endfor %}
             </ol>
         </div>

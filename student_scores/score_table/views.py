@@ -125,6 +125,7 @@ def run_selenium():
                     pass
                 except:
                     print(i)
+            driver.close()
         except:
             print(sys.exc_info())
         time.sleep(600)
@@ -169,10 +170,10 @@ def ScoreTable(request):
         d[i] = round(sum/c,2)
         count[i] = c
     a = dict(reversed(sorted(d.items(), key=lambda item: item[1])))
-
+    print("a",a)
     x = 0
-    for i in a.keys():
-        top10team.append(i)
+    for i in a:
+        top10team.append([str(i).zfill(2),str(a[i])])
 
         x += 1
         if x == 10:
